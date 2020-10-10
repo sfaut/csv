@@ -183,7 +183,7 @@ class Reader implements \Iterator
 
     public function key()
     {
-        return $this->row;
+        return $this->index;
     }
 
     public function next()
