@@ -10,7 +10,7 @@
         "url": "https://github.com/sfaut/csv-reader"
     }],
     "autoload": {
-        "psr-4": { "sfaut\\Csv\\": "" }
+        "psr-4": { "sfaut\\Csv\\": "./" }
     },
     "require": {
         "php": ">=7.4.0",
