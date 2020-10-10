@@ -1,0 +1,18 @@
+{
+    "name": "meo/csv-reader",
+    "type": "library",
+    "description": "CSV Reader",
+    "keywords": ["csv", "reader"],
+    "license": "Unlicensed",
+    "repositories": [{
+        "type": "vcs",
+        "url": "https://github.com/sfaut/csv-reader"
+    }],
+    "autoload": {
+        "psr-4": { "\\Meo\\Csv\\": "" }
+    },
+    "require": {
+        "php": ">=7.4.0",
+        "ext-mbstring": "*"
+    }
+}
