@@ -1,5 +1,5 @@
 {
-    "name": "meo/csv-reader",
+    "name": "sfaut/csv-reader",
     "type": "library",
     "description": "CSV Reader",
     "keywords": ["csv", "reader"],
@@ -9,7 +9,7 @@
         "url": "https://github.com/sfaut/csv-reader"
     }],
     "autoload": {
-        "psr-4": { "\\Meo\\Csv\\": "" }
+        "psr-4": { "\\sfaut\\Csv\\": "" }
     },
     "require": {
         "php": ">=7.4.0",
