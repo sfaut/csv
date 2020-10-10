@@ -13,7 +13,6 @@
         "psr-4": { "\\sfaut\\Csv\\": "" }
     },
     "require": {
-        "php": ">=7.4.0",
-        "ext-mbstring": "*"
+        "php": ">=7.4.0"
     }
 }
