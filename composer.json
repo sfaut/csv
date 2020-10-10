@@ -3,7 +3,7 @@
     "type": "library",
     "description": "CSV Reader",
     "keywords": ["csv", "reader"],
-    "license": "Unlicensed",
+    "license": "The Unlicensed",
     "repositories": [{
         "type": "vcs",
         "url": "https://github.com/sfaut/csv-reader"
