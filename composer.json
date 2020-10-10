@@ -4,6 +4,7 @@
     "description": "CSV Reader",
     "keywords": ["csv", "reader"],
     "license": "Unlicense",
+    "homepage": "https://github.com/sfaut",
     "repositories": [{
         "type": "vcs",
         "url": "https://github.com/sfaut/csv-reader"
