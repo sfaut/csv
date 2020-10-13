@@ -18,7 +18,7 @@ In your terminal, with [Composer](https://getcomposer.org/), execute :
 1. Download the [latest source code release](https://github.com/sfaut/csv-reader/releases/latest)
 2. Include `/csv-reader/Reader.php` in your PHP script
 
-## Example
+## Example -- Basics
 
 Data source `/path/to/countries.csv` :
 
@@ -66,3 +66,53 @@ Array (
     )
 )
 ``` 
+
+## Example -- Header
+
+By default the first line is considered like a CSV header. So, first line values are used to build an associative array for each CSV entry. We can disable auto-header with :
+
+```php
+$csv = new Csv\Reader($csv_file, ['header' => false]);
+````
+
+## Example -- Mapping
+
+Each row can be modified while reading. Fields can be added or removed, values can be updated.
+
+```php
+const populations = [
+    'Brésil' => 210_000_000,
+    'Japon' => 127_000_000,
+];
+
+// Uppercases country name
+// Add a field population
+// Removes capital and continent
+$csv = new Csv\Reader($csv_file, [
+    'map' => fn($entry) => [
+        'country' => mb_uppercase($entry['country'],
+        'population' => populations[$entry['country']] ?? '(unknow)',
+    ],
+]);
+
+print_r($csv->readAll());
+```
+
+Renders something like :
+
+```
+Array (
+    [0] => Array (
+        [country] => JAPON
+        [population] => 127000000
+    )
+    [1] => Array (
+        [country] => HONGRIE
+        [population] => (unknow)
+    )
+    [2] => Array (
+        [country] => BRÉSIL
+        [population] => 210000000
+    )
+)
+```
