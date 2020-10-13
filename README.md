@@ -127,10 +127,7 @@ Each CSV entry can be filtered while reading. Filter is applied after mapper.
 
 ```php
 $csv = new Csv\Reader($csv_file, [
-    // Searches additional data
-    'map' => fn($entry) => $entry + ['population' => populations[$entry['country']],
-    // Applies filter 
-    'filter' => fn($entry) => $entry['population'] >= 200_000_000,
+    'filter' => fn($entry) => $entry['continent'] === 'Europe',
 ]);
 
 print_r($csv->readAll());
@@ -141,10 +138,9 @@ Renders something like :
 ```
 Array (
     [0] => Array (
-        [country] => Brésil
-        [capital] => Brasilia
-        [continent] => Amérique
-        [population] => 210000000
+        [country] => Hongrie
+        [capital] => Budapest
+        [continent] => Europe
     )
 )
 ```
