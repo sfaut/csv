@@ -1,12 +1,15 @@
 # csv-reader
+
 Makes CSV files easily usable.
 
 ## Philosophy
+
 - KISS – Fire & Forget
 
 ## Installation
 
 ### Composer
+
 In your terminal, with [Composer](https://getcomposer.org/), execute :
 
 ```
@@ -15,6 +18,7 @@ In your terminal, with [Composer](https://getcomposer.org/), execute :
 ```
 
 ### Raw installation
+
 1. Download the [latest source code release](https://github.com/sfaut/csv-reader/releases/latest)
 2. Include `/csv-reader/Reader.php` in your PHP script
 
@@ -69,7 +73,7 @@ Array (
 
 ## Example -- Header
 
-By default the first line is considered like a CSV header. So, first line values are used to build an associative array for each CSV entry. We can disable auto-header with :
+By default the first CSV entry is considered like a CSV header. So, first line values are used to build an associative array for each CSV entry. We can disable auto-header with :
 
 ```php
 $csv = new Csv\Reader($csv_file, ['header' => false]);
@@ -77,7 +81,7 @@ $csv = new Csv\Reader($csv_file, ['header' => false]);
 
 ## Example -- Mapping
 
-Each row can be modified while reading. Fields can be added or removed, values can be updated.
+Each CSV entry can be modified while reading. Fields can be added or removed, values can be updated.
 
 ```php
 const populations = [
@@ -85,12 +89,12 @@ const populations = [
     'Japon' => 127_000_000,
 ];
 
-// Uppercases country name
-// Add a field population
-// Removes capital and continent
+// Merges continent to country
+// Adds a field population
+// Removes capital
 $csv = new Csv\Reader($csv_file, [
     'map' => fn($entry) => [
-        'country' => mb_uppercase($entry['country'],
+        'country' => $entry['country'] . ' // ' . $entry['continent'],
         'population' => populations[$entry['country']] ?? '(unknow)',
     ],
 ]);
@@ -103,15 +107,43 @@ Renders something like :
 ```
 Array (
     [0] => Array (
-        [country] => JAPON
+        [country] => Japon // Asie
         [population] => 127000000
     )
     [1] => Array (
-        [country] => HONGRIE
+        [country] => Hongrie // Europe
         [population] => (unknow)
     )
     [2] => Array (
-        [country] => BRÉSIL
+        [country] => Brésil // Amérique
+        [population] => 210000000
+    )
+)
+```
+
+## Example -- Filtering
+
+Each CSV entry can be filtered while reading. Filter is applied after mapper.
+
+```php
+$csv = new Csv\Reader($csv_file, [
+    // Searches additional data
+    'map' => fn($entry) => $entry + ['population' => populations[$entry['country']],
+    // Applies filter 
+    'filter' => fn($entry) => $entry['population'] >= 200_000_000,
+]);
+
+print_r($csv->readAll());
+```
+
+Renders something like :
+
+```
+Array (
+    [0] => Array (
+        [country] => Brésil
+        [capital] => Brasilia
+        [continent] => Amérique
         [population] => 210000000
     )
 )
