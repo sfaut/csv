@@ -1,4 +1,4 @@
-# csv-reader
+# Csv\Reader
 
 Makes CSV files easily usable.
 
@@ -10,19 +10,13 @@ Makes CSV files easily usable.
 
 ### Composer
 
-In your terminal, with [Composer](https://getcomposer.org/), execute :
+In your terminal, with [Composer](https://getcomposer.org/) and in your project root, execute :
 
 ```
-> composer install
-> composer require sfaut/csv-reader:*
+> composer require sfaut/csv
 ```
 
-### Raw installation
-
-1. Download the [latest source code release](https://github.com/sfaut/csv-reader/releases/latest)
-2. Include `/csv-reader/Reader.php` in your PHP script
-
-## Example -- Basics
+## Example -- Read all in a row
 
 Data source `/path/to/countries.csv` :
 
@@ -38,14 +32,49 @@ Brésil,Brasilia,Amérique
 
 use sfaut\Csv;
 
-require_once __DIR__ . '/vendor/autoload.php';
-// or
-// require_once __DIR__ . '/path/to/csv-reader/Reader.php';
+require_once '/path/to/vendor/autoload.php';
 
-$csv_file = __DIR__ . '/path/to/countries.csv';
+$csv_file = '/path/to/countries.csv';
+$csv = Csv\Reader::open($csv_file);
+print_r($csv->readAll());
+```
 
-$csv = new Csv\Reader($csv_file);
+> To shorten following examples, `use`, Composer autloader and `$csv_file` initialization will be snipped.
 
+Renders something like :
+
+```
+Array (
+    [0] => stdClass Object (
+        [0] => country
+        [1] => capital
+        [2] => continent
+    )
+    [1] => stdClass Object (
+        [0] => Japon
+        [1] => Tokyo
+        [2] => Asie
+    )
+    [2] => stdClass Object (
+        [0] => Hongrie
+        [1] => Budapest
+        [2] => Europe
+    )
+    [3] => stdClass Object (
+        [0] => Brésil
+        [1] => Brasilia
+        [2] => Amérique
+    )
+)
+```
+
+## Example -- Use header
+
+The first CSV file entry can be used to automatically name records' fields.
+The header parameter must be explicitely flaged `true` in order to avoid data loss.
+
+```php
+$csv = Csv\Reader::open($csv_file, ['header' => true]);
 print_r($csv->readAll());
 ```
 
@@ -53,35 +82,39 @@ Renders something like :
 
 ```
 Array (
-    [0] => Array (
+    [0] => stdClass Object (
         [country] => Japon
         [capital] => Tokyo
         [continent] => Asie
     )
-    [1] => Array (
+    [1] => stdClass Object (
         [country] => Hongrie
         [capital] => Budapest
         [continent] => Europe
     )
-    [2] => Array (
+    [2] => stdClass Object (
         [country] => Brésil
         [capital] => Brasilia
         [continent] => Amérique
     )
 )
-``` 
+```
 
-## Example -- Header
+## Example -- Iterate
 
-By default the first CSV entry is considered like a CSV header. So, first line values are used to build an associative array for each CSV entry. We can disable auto-header with :
+`Csv\Reader` implements `Iterator` interface, so we can iterate with a `foreach()` loop:
 
 ```php
-$csv = new Csv\Reader($csv_file, ['header' => false]);
-````
+$csv = Csv\Reader::open($csv_file, ['header' => true]);
+
+foreach ($csv as $record) {
+    print_r($record);
+}
+```
 
 ## Example -- Mapping
 
-Each CSV entry can be modified while reading. Fields can be added or removed, values can be updated.
+Each CSV record can be modified while reading. Fields can be added, removed or reordered; values can be casted or aupdated.
 
 ```php
 const populations = [
@@ -90,12 +123,12 @@ const populations = [
 ];
 
 // Merges continent to country
-// Adds a field population
+// Adds a field population according to populations constant
 // Removes capital
-$csv = new Csv\Reader($csv_file, [
-    'map' => fn($entry) => [
-        'country' => $entry['country'] . ' // ' . $entry['continent'],
-        'population' => populations[$entry['country']] ?? '(unknow)',
+$csv = Csv\Reader::open($csv_file, [
+    'map' => fn ($record) => (object)[
+        'country' => $record->country . ' // ' . $record->continent,
+        'population' => populations[$record->country] ?? null,
     ],
 ]);
 
@@ -106,15 +139,15 @@ Renders something like :
 
 ```
 Array (
-    [0] => Array (
+    [0] => stdClass Object (
         [country] => Japon // Asie
         [population] => 127000000
     )
-    [1] => Array (
+    [1] => stdClass Object (
         [country] => Hongrie // Europe
-        [population] => (unknow)
+        [population] =>
     )
-    [2] => Array (
+    [2] => stdClass Object (
         [country] => Brésil // Amérique
         [population] => 210000000
     )
@@ -123,11 +156,13 @@ Array (
 
 ## Example -- Filtering
 
-Each CSV entry can be filtered while reading. Filter is applied after mapper.
+Each CSV record can be filtered while reading. Filter is applied after mapper.
+
+We want to keep only European countries:
 
 ```php
-$csv = new Csv\Reader($csv_file, [
-    'filter' => fn($entry) => $entry['continent'] === 'Europe',
+$csv = Csv\Reader::open($csv_file, [
+    'filter' => fn ($entry) => ($record->continent === 'Europe'),
 ]);
 
 print_r($csv->readAll());
@@ -137,10 +172,26 @@ Renders something like :
 
 ```
 Array (
-    [0] => Array (
+    [0] => stdClass Object (
         [country] => Hongrie
         [capital] => Budapest
         [continent] => Europe
     )
 )
 ```
+
+## Properties
+
+Each of these `Csv\Reader` properties must be initialized with `$parameters` array passed to `Csv\Reader::open($file, $parameters)`.
+You should not access them in write in other way.
+
+|Property         |Type        |Description                                                                                                                        |
+|-----------------|------------|-----------------------------------------------------------------------------------------------------------------------------------|
+|`separator`      |string(1)   |Character separating each field, `,` by default.                                                                                   |
+|`enclosure`      |string(1)   |Character enclosing each field, `"` by default.                                                                                    |
+|`escape`         |string(1)   |Character escaping enclosure character, `''` (empty string) by default, in the case enclosure is escaped by doubling.              |
+|`fromEncoding`   |string      |Encoding of input file, must be one of `mb_list_encodings()`, eg. `Windows-1252`, useful if different of `toEncoding property`.    |
+|`toEncoding`     |string      |Encoding of output, must be one of `mb_list_encodings()`, eg. `UTF-8`, useful if different of `fromEncoding`.                      |
+|`header`         |boolean     |Flag indicating if first row is used as field name.                                                                                |
+|`map`            |callback    |Signature `fn ($record[, $index])`, returns the record mapped.                                                                       |
+|`filter`         |callback    |Signature `fn ($record[, $index])`, excludes the record of the result if the callback returns `false`, includes it if returns `true`.|

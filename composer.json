@@ -1,19 +1,22 @@
 {
-    "name": "sfaut/csv-reader",
+    "name": "sfaut/csv",
     "type": "library",
-    "description": "CSV Reader",
-    "keywords": ["csv", "reader"],
+    "description": "CSV Handler, read (now) and write (soon)",
+    "keywords": ["csv", "handler", "reader", "writer"],
     "license": "Unlicense",
     "homepage": "https://github.com/sfaut",
     "repositories": [{
         "type": "vcs",
-        "url": "https://github.com/sfaut/csv-reader"
+        "url": "https://github.com/sfaut/csv"
     }],
     "autoload": {
-        "psr-4": { "sfaut\\Csv\\": "./" }
+        "psr-4": { "sfaut\\Csv\\": "src" }
     },
     "require": {
         "php": ">=7.4.0",
         "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.21"
     }
 }
