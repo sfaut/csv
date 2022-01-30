@@ -114,7 +114,7 @@ foreach ($csv as $record) {
 
 ## Example -- Mapping
 
-Each CSV record can be modified while reading. Fields can be added, removed or reordered; values can be casted or aupdated.
+Each CSV record can be modified while reading. Fields can be added, removed or reordered; values can be casted or updated.
 
 ```php
 const populations = [
@@ -127,7 +127,7 @@ const populations = [
 // Removes capital
 $csv = Csv\Reader::open($csv_file, [
     'map' => fn ($record) => (object)[
-        'country' => $record->country . ' // ' . $record->continent,
+        'country' => "{$record->country} ({$record->continent})",
         'population' => populations[$record->country] ?? null,
     ],
 ]);
@@ -140,15 +140,15 @@ Renders something like :
 ```
 Array (
     [0] => stdClass Object (
-        [country] => Japon // Asie
+        [country] => Japon (Asie)
         [population] => 127000000
     )
     [1] => stdClass Object (
-        [country] => Hongrie // Europe
+        [country] => Hongrie (Europe)
         [population] =>
     )
     [2] => stdClass Object (
-        [country] => Brésil // Amérique
+        [country] => Brésil (Amérique)
         [population] => 210000000
     )
 )
