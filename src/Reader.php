@@ -116,10 +116,11 @@ class Reader implements \Iterator
         }
     }
 
-    public function readAll()
+    public static function readAll(string $file, array $parameters = []): array
     {
+        $csv = self::open($file, $parameters);
         $result = [];
-        foreach ($this as $record) {
+        foreach ($csv as $record) {
             $result[] = $record;
         }
         return $result;
@@ -137,7 +138,7 @@ class Reader implements \Iterator
         $this->index++;
 
         // Encodes handlings
-        $record = array_map([$this, 'convert'], $record);
+        $record = array_map([$this, 'transcode'], $record);
 
         // Header handling
         if ($this->header !== false) {
