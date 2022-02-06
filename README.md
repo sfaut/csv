@@ -35,8 +35,8 @@ use sfaut\Csv;
 require_once '/path/to/vendor/autoload.php';
 
 $csv_file = '/path/to/countries.csv';
-$csv = Csv\Reader::open($csv_file);
-print_r($csv->readAll());
+$data = Csv\Reader::readAll($csv_file);
+print_r($data);
 ```
 
 > To shorten following examples, `use`, Composer autloader and `$csv_file` initialization will be snipped.
