@@ -97,7 +97,7 @@ class Reader implements \Iterator
         } else {
             // TODO: secure this
             $header = fgetcsv($csv->handler, 0, $csv->separator, $csv->enclosure, $csv->escape);
-            $header = array_map([$csv, 'convert'], $header);
+            $header = array_map([$csv, 'transcode'], $header);
             $csv->columns = $header;
             $csv->columnsCount = count($csv->columns);
         }
@@ -107,7 +107,7 @@ class Reader implements \Iterator
         return $csv;
     }
 
-    protected function convert(string $value): string
+    protected function transcode(string $value): string
     {
         if ($this->fromEncoding !== $this->toEncoding) {
             return mb_convert_encoding($value, $this->fromEncoding, $this->toEncoding);
