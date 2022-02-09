@@ -185,13 +185,13 @@ Array (
 Each of these `Csv\Reader` properties must be initialized with `$parameters` array passed to `Csv\Reader::open($file, $parameters)`.
 You should not access them in write in other way.
 
-|Property         |Type        |Description                                                                                                                        |
-|-----------------|------------|-----------------------------------------------------------------------------------------------------------------------------------|
-|`separator`      |string(1)   |Character separating each field, `,` by default.                                                                                   |
-|`enclosure`      |string(1)   |Character enclosing each field, `"` by default.                                                                                    |
-|`escape`         |string(1)   |Character escaping enclosure character, `''` (empty string) by default, in the case enclosure is escaped by doubling.              |
-|`fromEncoding`   |string      |Encoding of input file, must be one of `mb_list_encodings()`, eg. `Windows-1252`, useful if different of `toEncoding property`.    |
-|`toEncoding`     |string      |Encoding of output, must be one of `mb_list_encodings()`, eg. `UTF-8`, useful if different of `fromEncoding`.                      |
-|`header`         |boolean     |Flag indicating if first row is used as field name.                                                                                |
+|Property         |Type        |Description                                                                                                                          |
+|-----------------|------------|-------------------------------------------------------------------------------------------------------------------------------------|
+|`separator`      |string(1)   |Character separating each field, `,` by default.                                                                                     |
+|`enclosure`      |string(1)   |Character enclosing each field, `"` by default.                                                                                      |
+|`escape`         |string(1)   |Character escaping enclosure character, `''` (empty string) by default, in the case enclosure is escaped by doubling.                |
+|`fromEncoding`   |string      |Encoding of input file, must be one of `mb_list_encodings()`, eg. `Windows-1252`, useful if different of `toEncoding` property.      |
+|`toEncoding`     |string      |Encoding of output, must be one of `mb_list_encodings()`, eg. `UTF-8`, useful if different of `fromEncoding`.                        |
+|`header`         |boolean     |Flag indicating if first row is used as field name.                                                                                  |
 |`map`            |callback    |Signature `fn ($record[, $index])`, returns the record mapped.                                                                       |
 |`filter`         |callback    |Signature `fn ($record[, $index])`, excludes the record of the result if the callback returns `false`, includes it if returns `true`.|
