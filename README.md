@@ -18,6 +18,8 @@ In your terminal, with [Composer](https://getcomposer.org/) and in your project 
 
 ## Example -- Read all in a row
 
+Useful when you need to read a CSV file at once. For large files, and to reduce memory consumption, prefer read record by record with `Csv::read()`.
+
 Data source `/path/to/countries.csv` :
 
 ```
@@ -74,8 +76,8 @@ The first CSV file entry can be used to automatically name records' fields.
 The header parameter must be explicitely flaged `true` in order to avoid data loss.
 
 ```php
-$csv = Csv\Reader::open($csv_file, ['header' => true]);
-print_r($csv->readAll());
+$data = Csv\Reader::all($csv_file, ['header' => true]);
+print_r($data);
 ```
 
 Renders something like :
@@ -100,7 +102,15 @@ Array (
 )
 ```
 
-## Example -- Iterate
+## Example -- Iterate record by record
+
+```php
+$csv = Csv\Reader::open($csv_file, ['header' => true]);
+
+while ($record = $csv->read()) {
+    print_r($record);
+}
+```
 
 `Csv\Reader` implements `Iterator` interface, so we can iterate with a `foreach()` loop:
 
@@ -185,13 +195,21 @@ Array (
 Each of these `Csv\Reader` properties must be initialized with `$parameters` array passed to `Csv\Reader::open($file, $parameters)`.
 You should not access them in write in other way.
 
-|Property         |Type        |Description                                                                                                                          |
-|-----------------|------------|-------------------------------------------------------------------------------------------------------------------------------------|
-|`separator`      |string(1)   |Character separating each field, `,` by default.                                                                                     |
-|`enclosure`      |string(1)   |Character enclosing each field, `"` by default.                                                                                      |
-|`escape`         |string(1)   |Character escaping enclosure character, `''` (empty string) by default, in the case enclosure is escaped by doubling.                |
-|`fromEncoding`   |string      |Encoding of input file, must be one of `mb_list_encodings()`, eg. `Windows-1252`, useful if different of `toEncoding` property.      |
-|`toEncoding`     |string      |Encoding of output, must be one of `mb_list_encodings()`, eg. `UTF-8`, useful if different of `fromEncoding`.                        |
-|`header`         |boolean     |Flag indicating if first row is used as field name.                                                                                  |
-|`map`            |callback    |Signature `fn ($record[, $index])`, returns the record mapped.                                                                       |
-|`filter`         |callback    |Signature `fn ($record[, $index])`, excludes the record of the result if the callback returns `false`, includes it if returns `true`.|
+|Property         |Type          |Description                                                                                                                          |
+|-----------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------|
+|`separator`      |`string(1)`   |Character separating each field, `,` by default.                                                                                     |
+|`enclosure`      |`string(1)`   |Character enclosing each field, `"` by default.                                                                                      |
+|`escape`         |`string(1)`   |Character escaping enclosure character, `''` (empty string) by default, in the case enclosure is escaped by doubling.                |
+|`fromEncoding`   |`string`      |Encoding of input file, must be one of `mb_list_encodings()`, eg. `Windows-1252`, useful if different of `toEncoding` property.      |
+|`toEncoding`     |`string`      |Encoding of output, must be one of `mb_list_encodings()`, eg. `UTF-8`, useful if different of `fromEncoding`.                        |
+|`header`         |`boolean`     |Flag indicating if first row is used as field name.                                                                                  |
+|`map`            |`callback`    |Signature `fn ($record[, $index])`, returns the record mapped.                                                                       |
+|`filter`         |`callback`    |Signature `fn ($record[, $index])`, excludes the record of the result if the callback returns `false`, includes it if returns `true`.|
+
+## Public methods
+
+|Method  |Signature                                                       |Description                                                                                          |
+|--------|----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+|`open`  |`public static open(string $file, array $parameters = [])`      |Opens immediately CSV file `$file`. Throws an exception if fails. You should next use `Csv::read()`. |
+|`read`  |`public read(): ?object`                                        |Reads a record, and returns an anonymous record object or `null` if file read is finished.           |
+|`all`   |`public static all(string $file, array $parameters = []): array`|Reads all records, and returns an array of anonymous records objects.                                |
