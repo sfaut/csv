@@ -35,7 +35,7 @@ use sfaut\Csv;
 require_once '/path/to/vendor/autoload.php';
 
 $csv_file = '/path/to/countries.csv';
-$data = Csv\Reader::readAll($csv_file);
+$data = Csv\Reader::all($csv_file);
 print_r($data);
 ```
 
@@ -132,7 +132,7 @@ $csv = Csv\Reader::open($csv_file, [
     ],
 ]);
 
-print_r($csv->readAll());
+print_r($csv->all());
 ```
 
 Renders something like :
@@ -161,11 +161,11 @@ Each CSV record can be filtered while reading. Filter is applied after mapper.
 We want to keep only European countries:
 
 ```php
-$csv = Csv\Reader::open($csv_file, [
+$data = Csv\Reader::all($csv_file, [
     'filter' => fn ($entry) => ($record->continent === 'Europe'),
 ]);
 
-print_r($csv->readAll());
+print_r($data);
 ```
 
 Renders something like :
