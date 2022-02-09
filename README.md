@@ -135,14 +135,14 @@ const populations = [
 // Merges continent to country
 // Adds a field population according to populations constant
 // Removes capital
-$csv = Csv\Reader::open($csv_file, [
+$data = Csv\Reader::all($csv_file, [
     'map' => fn ($record) => (object)[
         'country' => "{$record->country} ({$record->continent})",
         'population' => populations[$record->country] ?? null,
     ],
 ]);
 
-print_r($csv->all());
+print_r($data);
 ```
 
 Renders something like :
