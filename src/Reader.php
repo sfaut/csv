@@ -116,7 +116,7 @@ class Reader implements \Iterator
         }
     }
 
-    public static function readAll(string $file, array $parameters = []): array
+    public static function all(string $file, array $parameters = []): array
     {
         $csv = self::open($file, $parameters);
         $result = [];
