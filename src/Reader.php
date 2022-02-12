@@ -22,7 +22,7 @@ class Reader implements \Iterator
     public string $toEncoding;
 
     public string $file; // File path/name
-    protected $handler = null; // File handler resource
+    protected $stream = null; // File stream resource
     protected string $bom; // BOM type detected
 
     protected int $index; // record index, first record (maybe header) is 0
@@ -82,13 +82,13 @@ class Reader implements \Iterator
             throw new \Exception("File {$csv->file} is not readable");
         }
 
-        $csv->handler = @fopen($csv->file, 'r');
+        $csv->stream = @fopen($csv->file, 'r');
 
-        if ($csv->handler === false) {
+        if ($csv->stream === false) {
             throw new \Exception("File {$csv->file} opening failed");
         }
 
-        if (@flock($csv->handler, LOCK_SH) === false) {
+        if (@flock($csv->stream, LOCK_SH) === false) {
             throw new \Exception("File {$csv->file} locking failed");
         }
 
@@ -96,13 +96,13 @@ class Reader implements \Iterator
             // No header
         } else {
             // TODO: secure this
-            $header = fgetcsv($csv->handler, 0, $csv->separator, $csv->enclosure, $csv->escape);
+            $header = fgetcsv($csv->stream, 0, $csv->separator, $csv->enclosure, $csv->escape);
             $header = array_map([$csv, 'transcode'], $header);
             $csv->columns = $header;
             $csv->columnsCount = count($csv->columns);
         }
 
-        $csv->startingByte = ftell($csv->handler);
+        $csv->startingByte = ftell($csv->stream);
 
         return $csv;
     }
@@ -128,7 +128,7 @@ class Reader implements \Iterator
 
     public function read(): ?object
     {
-        $record = @fgetcsv($this->handler, 0, $this->separator, $this->enclosure, $this->escape);
+        $record = @fgetcsv($this->stream, 0, $this->separator, $this->enclosure, $this->escape);
 
         if ($record === false) { // File end ?
             return null;
@@ -167,8 +167,8 @@ class Reader implements \Iterator
 
     public function __destruct()
     {
-        if (is_resource($this->handler)) {
-            fclose($this->handler);
+        if (is_resource($this->stream)) {
+            fclose($this->stream);
         }
     }
 
@@ -178,7 +178,7 @@ class Reader implements \Iterator
 
     public function rewind()
     {
-        fseek($this->handler, $this->startingByte, SEEK_SET);
+        fseek($this->stream, $this->startingByte, SEEK_SET);
         $this->index = 0;
         $this->filtered = 0;
         $this->record = $this->read();
