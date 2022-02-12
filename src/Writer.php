@@ -4,7 +4,7 @@ namespace sfaut\Csv;
 
 class Writer
 {
-    public static function all (string $file, array $records, array $parameters = [])
+    public static function all(string $file, array $records, array $parameters = [])
     {
         $separator = $parameters['separator'] ?? ',';
         $enclosure = $parameters['enclosure'] ?? '"';
