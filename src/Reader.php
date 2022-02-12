@@ -5,11 +5,11 @@ namespace sfaut\Csv;
 class Reader implements \Iterator
 {
     const BOM = [
-        'UTF8' => "\xEF\xBB\xBF",
-        'UTF16_BE' => "\xFE\xFF",
-        'UTF16_LE' => "\xFF\xFE",
-        'UTF32_BE' => "\x00\x00\xFE\xFF",
-        'UTF32_LE' => "\xFE\xFF\x00\x00",
+        'UTF-8'    => "\xEF\xBB\xBF",
+        'UTF-16BE' => "\xFE\xFF",
+        'UTF-16LE' => "\xFF\xFE",
+        'UTF-32BE' => "\x00\x00\xFE\xFF",
+        'UTF-32LE' => "\xFE\xFF\x00\x00",
     ];
 
     // Main CSV file properties
@@ -39,7 +39,7 @@ class Reader implements \Iterator
     protected int $startingByte; // Data starting byte in file (for rewind after header)
     protected ?object $record = null; // Current CSV row, null is file ended
 
-    protected function __construct(array $parameters = [])
+    protected function __construct(array $parameters)
     {
         $this->separator = $parameters['separator'] ?? ',';
         $this->enclosure = $parameters['enclosure'] ?? '"';
