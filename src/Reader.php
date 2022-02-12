@@ -46,7 +46,6 @@ class Reader implements \Iterator
         $this->escape = $parameters['escape'] ?? '';
         $this->fromEncoding = $parameters['fromEncoding'] ?? 'UTF-8';
         $this->toEncoding = $parameters['toEncoding'] ?? 'UTF-8';
-        $this->file = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file);
         $this->index = 0;
         $this->header = $parameters['header'] ?? true;
 
@@ -72,7 +71,7 @@ class Reader implements \Iterator
     {
         $csv = new self($parameters);
 
-        $csv->file = $file;
+        $csv->file = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file);
 
         if (!file_exists($csv->file)) {
             throw new \Exception("File {$csv->file} does not exists");
