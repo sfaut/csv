@@ -4,14 +4,6 @@ namespace sfaut\Csv;
 
 class Reader implements \Iterator
 {
-    const BOM = [
-        'UTF-8'    => "\xEF\xBB\xBF",
-        'UTF-16BE' => "\xFE\xFF",
-        'UTF-16LE' => "\xFF\xFE",
-        'UTF-32BE' => "\x00\x00\xFE\xFF",
-        'UTF-32LE' => "\xFE\xFF\x00\x00",
-    ];
-
     // Main CSV file properties
     public string $separator;
     public string $enclosure;
@@ -89,6 +81,11 @@ class Reader implements \Iterator
 
         if (@flock($csv->stream, LOCK_SH) === false) {
             throw new \Exception("File {$csv->file} locking failed");
+        }
+
+        $chunk = fread($csv->stream, 3);
+        if ($chunk !== "\xEF\xBB\xBF") { // BOM UTF-8 ?
+            rewind($csv->stream);
         }
 
         if ($csv->header === false) {
